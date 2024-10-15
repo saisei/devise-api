@@ -54,6 +54,8 @@ module Devise
         if service.success?
           token = service.success
 
+          return render json: { message: 'User is not enabled to use version 2.' }, status: :unauthorized unless token.resource_owner.enabled_for_v2
+
           call_devise_trackable!(token.resource_owner)
 
           token_response = Devise::Api::Responses::TokenResponse.new(request, token: service.success,
