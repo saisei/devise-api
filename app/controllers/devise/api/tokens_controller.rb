@@ -21,6 +21,9 @@ module Devise
 
         Devise.api.config.before_sign_up.call(sign_up_params, request, resource_class)
 
+        # Custom call for version 2
+        sign_up_params[:enabled_for_v2] = true
+
         service = Devise::Api::ResourceOwnerService::SignUp.new(params: sign_up_params,
                                                                 resource_class: resource_class).call
 
@@ -54,6 +57,7 @@ module Devise
         if service.success?
           token = service.success
 
+          # Custom call for version 2
           return render json: { message: 'User is not enabled to use version 2.' }, status: :unauthorized unless token.resource_owner.enabled_for_v2
 
           call_devise_trackable!(token.resource_owner)
