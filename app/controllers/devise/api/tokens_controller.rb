@@ -36,7 +36,9 @@ module Devise
 
           Devise.api.config.after_successful_sign_up.call(token.resource_owner, token, request)
 
-          return render json: token_response.body, status: token_response.status
+          # Due to the nature of the v2 user sign up approval process, we cannot return the token body here.
+          # return render json: token_response.body, status: token_response.status
+          return render json: {}, status: token_response.status
         end
 
         error_response = Devise::Api::Responses::ErrorResponse.new(request,
